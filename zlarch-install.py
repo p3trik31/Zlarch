@@ -326,14 +326,14 @@ def perform_installation(mountpoint):
   
 		print("Konfigurace prostředí")
 		#archinstall.run_custom_user_commands(['mkdir /tmp'], installation, showLog = False)
-		archinstall.run_custom_user_commands(['cd /tmp'], installation, showLog = False)
+		#archinstall.run_custom_user_commands(['cd /tmp'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "NAME=\"Zlarch\"" > /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "VESION=1.0" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "ID=Zlarch" >> /etc/os-release'], installation, showLog = False)
-		archinstall.run_custom_user_commands(['echo "PRETTY_NAME=\"Zlarch OS\"" >> /etc/os-release'], installation, showLog = False)
+		archinstall.run_custom_user_commands(['echo "PRETTY_NAME=\"Zlarch_OS\"" >> /etc/os-release'], installation, showLog = False)
   
 		archinstall.run_custom_user_commands(['touch pokus.sh'], installation, showLog=False)
-		archinstall.run_custom_user_commands(['echo "touch idk.txt" >> /tmp/pokus.sh'], installation, showLog=False)
+		archinstall.run_custom_user_commands(['echo "touch idk.txt" >> pokus.sh'], installation, showLog=False)
 		archinstall.run_custom_user_commands(['sh pokus.sh'], installation, showLog=False)
 		
 		
