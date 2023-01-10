@@ -30,7 +30,7 @@ _______  _        _______  _______  _______
                 """)
 
 
-os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
+#os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
 #Pacman -Sy archlinux-keyring
  
  
@@ -58,7 +58,8 @@ def ask_user_questions():
 	
     #nastaveni cz klavesnice
 	archinstall.arguments['keyboard-layout'] = 'cz'   
-
+	#print(archinstall.arguments['keyboard-layout'])
+	#input()
 	# okna
 	if not archinstall.arguments.get('mirror-region', None):
 		archinstall.arguments['mirror-region'] = archinstall.select_mirror_regions()
@@ -132,7 +133,9 @@ def ask_user_questions():
 	
 	# Ask or Call the helper function that asks the user to optionally configure a network.
 	if not archinstall.arguments.get('nic', None):
-		archinstall.arguments['nic'] = archinstall.ask_to_configure_network()
+		archinstall.arguments['nic'] = '{\'nic\': \'Use NetworkManager (necessary to configure internet graphically in GNOME and KDE)\', \'NetworkManager\': True}'     #archinstall.ask_to_configure_network() 
+		print(archinstall.arguments['nic'])
+		input()
 		if not archinstall.arguments['nic']:
 			archinstall.log("No network configuration was selected. Network is going to be unavailable until configured manually!", fg="yellow")
 
