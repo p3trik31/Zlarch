@@ -132,12 +132,12 @@ def ask_user_questions():
 		archinstall.arguments['kernels'] = archinstall.select_kernel()
 	
 	# Ask or Call the helper function that asks the user to optionally configure a network.
-	if not archinstall.arguments.get('nic', None):
-		archinstall.arguments['nic'] = 'NetworkManager'  #archinstall.ask_to_configure_network() 
-		print(archinstall.arguments['nic'])
-		input()
-		if not archinstall.arguments['nic']:
-			archinstall.log("No network configuration was selected. Network is going to be unavailable until configured manually!", fg="yellow")
+	#if not archinstall.arguments.get('nic', None):
+	#	archinstall.arguments['nic'] = 'NetworkManager'  #archinstall.ask_to_configure_network() 
+	#	print(archinstall.arguments['nic'])
+	#	input()
+	#	if not archinstall.arguments['nic']:
+	#		archinstall.log("No network configuration was selected. Network is going to be unavailable until configured manually!", fg="yellow")
 
 	if not archinstall.arguments.get('timezone', None):
 		archinstall.arguments['timezone'] = archinstall.ask_for_a_timezone()
@@ -244,16 +244,16 @@ def perform_installation(mountpoint):
 
 			# If user selected to copy the current ISO network configuration
 			# Perform a copy of the config
-			if archinstall.arguments.get('nic', {}) == 'Copy ISO network configuration to installation':
-				installation.copy_iso_network_config(enable_services=True)  # Sources the ISO network configuration to the install medium.
-			elif archinstall.arguments.get('nic', {}).get('NetworkManager', False):
+		#	if archinstall.arguments.get('nic', {}) == 'Copy ISO network configuration to installation':
+		#		installation.copy_iso_network_config(enable_services=True)  # Sources the ISO network configuration to the install medium.
+		#	elif archinstall.arguments.get('nic', {}).get('NetworkManager', False):
 				installation.add_additional_packages("networkmanager")
 				installation.enable_service('NetworkManager.service')
 			# Otherwise, if a interface was selected, configure that interface
-			elif archinstall.arguments.get('nic', {}):
-				installation.configure_nic(**archinstall.arguments.get('nic', {}))
-				installation.enable_service('systemd-networkd')
-				installation.enable_service('systemd-resolved')
+		#	elif archinstall.arguments.get('nic', {}):
+		#		installation.configure_nic(**archinstall.arguments.get('nic', {}))
+		#		installation.enable_service('systemd-networkd')
+		#		installation.enable_service('systemd-resolved')
 
 			if archinstall.arguments.get('audio', None) is not None:
 				installation.log(f"This audio server will be used: {archinstall.arguments.get('audio', None)}", level=logging.INFO)
