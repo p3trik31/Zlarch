@@ -57,7 +57,7 @@ def ask_user_questions():
 	"""
 	
     #nastaveni cz klavesnice
-	archinstall.arguments['keyboard-layout'] = 'cz'   
+	archinstall.arguments['keyboard-layout'] = 'cz-qwertz'   
 	#print(archinstall.arguments['keyboard-layout'])
 	#input()
 	# okna
