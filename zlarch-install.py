@@ -133,7 +133,7 @@ def ask_user_questions():
 	
 	# Ask or Call the helper function that asks the user to optionally configure a network.
 	if not archinstall.arguments.get('nic', None):
-		archinstall.arguments['nic'] = '{\'nic\': \'Use NetworkManager (necessary to configure internet graphically in GNOME and KDE)\', \'NetworkManager\': True}'     #archinstall.ask_to_configure_network() 
+		archinstall.arguments['nic'] = 'NetworkManager'  #archinstall.ask_to_configure_network() 
 		print(archinstall.arguments['nic'])
 		input()
 		if not archinstall.arguments['nic']:
