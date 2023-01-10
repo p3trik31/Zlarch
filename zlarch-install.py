@@ -30,7 +30,7 @@ _______  _        _______  _______  _______
                 """)
 
 
-#os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
+os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
 #Pacman -Sy archlinux-keyring
  
  
