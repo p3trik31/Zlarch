@@ -90,9 +90,8 @@ def ask_user_questions():
 
 	# Ask for archinstall-specific profiles (such as desktop environments etc)
 	
+
 	archinstall.arguments['profile'] = archinstall.select_profile()
-	#archinstall.arguments['profile'] = 
-	# Check the potentially selected profiles preparations to get early checks if some additional questions are needed.
 	if archinstall.arguments['profile'] and archinstall.arguments['profile'].has_prep_function():
 		namespace = f"{archinstall.arguments['profile'].namespace}.py"
 		with archinstall.arguments['profile'].load_instructions(namespace=namespace) as imported:
@@ -106,7 +105,7 @@ def ask_user_questions():
 	archinstall.arguments['audio'] = archinstall.ask_for_audio_selection(archinstall.is_desktop_profile(archinstall.arguments['profile']))
 
 	
-	#archinstall.arguments['kernels'] = 'linux'  #archinstall.select_kernel()
+	archinstall.arguments['kernels'] = 'linux'  #archinstall.select_kernel()
 	
 
 	
