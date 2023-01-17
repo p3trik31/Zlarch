@@ -207,7 +207,7 @@ def perform_installation(mountpoint):
 			if archinstall.arguments['swap']:
 				installation.setup_swap('zram')
 
-
+			installation.add_additional_packages("networkmanager")
 			installation.enable_service('NetworkManager.service')			
 
 			if archinstall.arguments.get('audio', None) is not None:
