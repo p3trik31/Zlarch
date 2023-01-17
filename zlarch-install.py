@@ -50,19 +50,15 @@ archinstall.log(f"Disk states before installing: {archinstall.disk_layouts()}", 
 
 
 def ask_user_questions():
-	"""
-		First, we'll ask the user for a bunch of user input.
-		Not until we're satisfied with what we want to install
-		will we continue with the actual installation steps.
-	"""
+	
 	
     #nastaveni cz klavesnice
 	archinstall.arguments['keyboard-layout'] = 'cz-qwertz'   
 	#print(archinstall.arguments['keyboard-layout'])
 	#input()
 	# okna
-	if not archinstall.arguments.get('mirror-region', None):
-		archinstall.arguments['mirror-region'] = archinstall.select_mirror_regions()
+	
+	archinstall.arguments['mirror-region'] = archinstall.select_mirror_regions()
 
 	#jazyk
 	archinstall.arguments['sys-language'] = 'cs_CZ'
@@ -71,48 +67,48 @@ def ask_user_questions():
 
 	# Ask which harddrives/block-devices we will install to
 	# and convert them into archinstall.BlockDevice() objects.
-	if archinstall.arguments.get('harddrives', None) is None:
-		archinstall.arguments['harddrives'] = archinstall.select_harddrives()
+	
+	archinstall.arguments['harddrives'] = archinstall.select_harddrives()
 
-	if archinstall.arguments.get('harddrives', None) is not None and archinstall.storage.get('disk_layouts', None) is None:
-		archinstall.storage['disk_layouts'] = archinstall.select_disk_layout(archinstall.arguments['harddrives'], archinstall.arguments.get('advanced', False))
+	
+	archinstall.storage['disk_layouts'] = archinstall.select_disk_layout(archinstall.arguments['harddrives'], archinstall.arguments.get('advanced', False))
 
 	# Get disk encryption password (or skip if blank)
-	if archinstall.arguments['harddrives'] and archinstall.arguments.get('!encryption-password', None) is None:
-		if passwd := archinstall.get_password(prompt='Enter disk encryption password (leave blank for no encryption): '):
-			archinstall.arguments['!encryption-password'] = passwd
+	
+	passwd = archinstall.get_password(prompt='Enter disk encryption password (leave blank for no encryption): ')
+	archinstall.arguments['!encryption-password'] = passwd
 
-	if archinstall.arguments['harddrives'] and archinstall.arguments.get('!encryption-password', None):
+
 		# If no partitions was marked as encrypted, but a password was supplied and we have some disks to format..
 		# Then we need to identify which partitions to encrypt. This will default to / (root).
-		if len(list(archinstall.encrypted_partitions(archinstall.storage['disk_layouts']))) == 0:
+	if len(list(archinstall.encrypted_partitions(archinstall.storage['disk_layouts']))) == 0:
 			archinstall.storage['disk_layouts'] = archinstall.select_encrypted_partitions(archinstall.storage['disk_layouts'], archinstall.arguments['!encryption-password'])
 
 	# Ask which boot-loader to use (will only ask if we're in BIOS (non-efi) mode)
-	if not archinstall.arguments.get("bootloader", None):
-		archinstall.arguments["bootloader"] = archinstall.ask_for_bootloader(archinstall.arguments.get('advanced', False))
+	
+	archinstall.arguments["bootloader"] = archinstall.ask_for_bootloader(archinstall.arguments.get('advanced', False))
 
-	if not archinstall.arguments.get('swap', None):
-		archinstall.arguments['swap'] = archinstall.ask_for_swap()
+	
+	archinstall.arguments['swap'] = archinstall.ask_for_swap()
 
 	# Get the hostname for the machine
-	if not archinstall.arguments.get('hostname', None):
-		archinstall.arguments['hostname'] = input('hostname: ').strip(' ')
+	
+	archinstall.arguments['hostname'] = input('hostname: ').strip(' ')
 
 	# Ask for a root password (optional, but triggers requirement for super-user if skipped)
-	if not archinstall.arguments.get('!root-password', None):
-		archinstall.arguments['!root-password'] = archinstall.get_password(prompt='Enter root password (leave blank to disable root & create superuser): ')
+	
+	archinstall.arguments['!root-password'] = archinstall.get_password(prompt='Enter root password (leave blank to disable root & create superuser): ')
 
 	# Ask for additional users (super-user if root pw was not set)
 	# if not archinstall.arguments.get('!root-password', None) and not archinstall.arguments.get('!superusers', None):
-		archinstall.arguments['!superusers'] = archinstall.ask_for_superuser_account('Create a required super-user with sudo privileges: ', forced=True)
-		users, superusers = archinstall.ask_for_additional_users('Enter a username to create an additional user (leave blank to skip & continue): ')
-		archinstall.arguments['!users'] = users
-		archinstall.arguments['!superusers'] = {**archinstall.arguments['!superusers'], **superusers}
+	archinstall.arguments['!superusers'] = archinstall.ask_for_superuser_account('Create a required super-user with sudo privileges: ', forced=True)
+	users, superusers = archinstall.ask_for_additional_users('Enter a username to create an additional user (leave blank to skip & continue): ')
+	archinstall.arguments['!users'] = users
+	archinstall.arguments['!superusers'] = {**archinstall.arguments['!superusers'], **superusers}
 
 	# Ask for archinstall-specific profiles (such as desktop environments etc)
-	if not archinstall.arguments.get('profile', None):
-		archinstall.arguments['profile'] = archinstall.select_profile()
+	
+	archinstall.arguments['profile'] = archinstall.select_profile()
 	#archinstall.arguments['profile'] = 
 	# Check the potentially selected profiles preparations to get early checks if some additional questions are needed.
 	if archinstall.arguments['profile'] and archinstall.arguments['profile'].has_prep_function():
@@ -122,31 +118,22 @@ def ask_user_questions():
 				archinstall.log(' * Profile\'s preparation requirements was not fulfilled.', fg='red')
 				exit(1)
 
-	# Ask about audio server selection if one is not already set
-	if not archinstall.arguments.get('audio', None):
-		# The argument to ask_for_audio_selection lets the library know if it's a desktop profile
-		archinstall.arguments['audio'] = archinstall.ask_for_audio_selection(archinstall.is_desktop_profile(archinstall.arguments['profile']))
-
-	# Ask for preferred kernel:
-	if not archinstall.arguments.get("kernels", None):
-		archinstall.arguments['kernels'] = archinstall.select_kernel()
 	
-	# Ask or Call the helper function that asks the user to optionally configure a network.
-	#if not archinstall.arguments.get('nic', None):
-	#	archinstall.arguments['nic'] = 'NetworkManager'  #archinstall.ask_to_configure_network() 
-	#	print(archinstall.arguments['nic'])
-	#	input()
-	#	if not archinstall.arguments['nic']:
-	#		archinstall.log("No network configuration was selected. Network is going to be unavailable until configured manually!", fg="yellow")
+	
+		# The argument to ask_for_audio_selection lets the library know if it's a desktop profile
+	archinstall.arguments['audio'] = archinstall.ask_for_audio_selection(archinstall.is_desktop_profile(archinstall.arguments['profile']))
 
-	if not archinstall.arguments.get('timezone', None):
-		archinstall.arguments['timezone'] = archinstall.ask_for_a_timezone()
+	
+	#archinstall.arguments['kernels'] = 'linux'  #archinstall.select_kernel()
+	
 
-	if archinstall.arguments['timezone']:
-		if not archinstall.arguments.get('ntp', False):
-			archinstall.arguments['ntp'] = input("Would you like to use automatic time synchronization (NTP) with the default time servers? [Y/n]: ").strip().lower() in ('y', 'yes', '')
-			if archinstall.arguments['ntp']:
-				archinstall.log("Hardware time and other post-configuration steps might be required in order for NTP to work. For more information, please check the Arch wiki.", fg="yellow")
+	
+	archinstall.arguments['timezone'] = archinstall.ask_for_a_timezone()
+
+	if archinstall.arguments['timezone']:		
+		archinstall.arguments['ntp'] = input("Would you like to use automatic time synchronization (NTP) with the default time servers? [Y/n]: ").strip().lower() in ('y', 'yes', '')
+		if archinstall.arguments['ntp']:
+			archinstall.log("Hardware time and other post-configuration steps might be required in order for NTP to work. For more information, please check the Arch wiki.", fg="yellow")
 
 
 def perform_filesystem_operations():
@@ -167,8 +154,8 @@ def perform_filesystem_operations():
 	if archinstall.arguments.get('dry-run'):
 		exit(0)
 
-	if not archinstall.arguments.get('silent'):
-		input('Press Enter to continue.')
+	
+	input('Press Enter to continue.')
 
 	"""
 		Issue a final warning before we continue with something un-revertable.
@@ -179,10 +166,7 @@ def perform_filesystem_operations():
 		print(f" ! Formatting {archinstall.arguments['harddrives']} in ", end='')
 		archinstall.do_countdown()
 
-		"""
-			Setup the blockdevice, filesystem (and optionally encryption).
-			Once that's done, we'll hand over to perform_installation()
-		"""
+		
 		mode = archinstall.GPT
 		if archinstall.has_uefi() is False:
 			mode = archinstall.MBR
@@ -242,18 +226,8 @@ def perform_installation(mountpoint):
 			if archinstall.arguments['swap']:
 				installation.setup_swap('zram')
 
-			# If user selected to copy the current ISO network configuration
-			# Perform a copy of the config
-		#	if archinstall.arguments.get('nic', {}) == 'Copy ISO network configuration to installation':
-		#		installation.copy_iso_network_config(enable_services=True)  # Sources the ISO network configuration to the install medium.
-		#	elif archinstall.arguments.get('nic', {}).get('NetworkManager', False):
-			installation.add_additional_packages("networkmanager")
-			installation.enable_service('NetworkManager.service')
-			# Otherwise, if a interface was selected, configure that interface
-		#	elif archinstall.arguments.get('nic', {}):
-		#		installation.configure_nic(**archinstall.arguments.get('nic', {}))
-		#		installation.enable_service('systemd-networkd')
-		#		installation.enable_service('systemd-resolved')
+
+			installation.enable_service('NetworkManager.service')			
 
 			if archinstall.arguments.get('audio', None) is not None:
 				installation.log(f"This audio server will be used: {archinstall.arguments.get('audio', None)}", level=logging.INFO)
@@ -305,12 +279,7 @@ def perform_installation(mountpoint):
 		# Note that while it's called enable_service, it can actually take a list of services and iterate it.
 		if archinstall.arguments.get('services', None):
 			installation.enable_service(*archinstall.arguments['services'])
-
-		# If the user provided custom commands to be run post-installation, execute them now.
-		if archinstall.arguments.get('custom-commands', None):
-			archinstall.run_custom_user_commands(archinstall.arguments['custom-commands'], installation)
-
-		#
+		
 
 		print("Konfigurace Bootloaderu")
   		#archinstall.run_custom_user_commands(['sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT=""/' /etc/default/grub'], installation, showLog = False)
@@ -325,7 +294,7 @@ def perform_installation(mountpoint):
 		archinstall.run_custom_user_commands(["pacman -Sy"], installation, showLog=False)
 
 		print("instalace balíčků")
-		archinstall.run_custom_user_commands(["pacman -S git neofetch man firefox openssl-1.1 --noconfirm"], installation, showLog=False)
+		archinstall.run_custom_user_commands(["pacman -S git neofetch man firefox openssl-1.1 papirus-icon-theme --noconfirm"], installation, showLog=False)
   
 		print("Konfigurace prostředí")
 		#archinstall.run_custom_user_commands(['mkdir /tmp'], installation, showLog = False)
@@ -354,13 +323,6 @@ def perform_installation(mountpoint):
 	# For support reasons, we'll log the disk layout post installation (crash or no crash)
 	archinstall.log(f"Disk states after installing: {archinstall.disk_layouts()}", level=logging.DEBUG)
 
-
-
-
-
-# Prikaz --Silent nebude bude se to ptat standartne
-#if not archinstall.arguments.get('silent'):
-#	ask_user_questions()
 
 
 ask_user_questions()
