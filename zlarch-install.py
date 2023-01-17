@@ -1,5 +1,3 @@
-#zlarch 0.2
-#Pacman -Sy archlinux-keyring
 import json
 import logging
 import os
@@ -7,16 +5,11 @@ import pathlib
 import time
 import getpass
 import archinstall
-
-
 	
 if os.getuid() != 0:
 	print("Program potřebuje root pravomoce pro spuštění")
 	exit(1)
  
- 
- 
-  #ascii logo
 print(r"""\
 _______  _        _______  _______  _______          
 / ___   )( \      (  ___  )(  ____ )(  ____ \|\     /|
@@ -31,15 +24,7 @@ _______  _        _______  _______  _______
 
 
 os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
-#Pacman -Sy archlinux-keyring
- 
- 
- 
- 
- 
 
-# Logovani informací
-# promazat
 archinstall.log(f"Hardware model detected: {archinstall.sys_vendor()} {archinstall.product_name()}; UEFI mode: {archinstall.has_uefi()}", level=logging.DEBUG)
 archinstall.log(f"Processor model detected: {archinstall.cpu_model()}", level=logging.DEBUG)
 archinstall.log(f"Memory statistics: {archinstall.mem_available()} available out of {archinstall.mem_total()} total installed", level=logging.DEBUG)
@@ -48,15 +33,12 @@ archinstall.log(f"Graphics devices detected: {archinstall.graphics_devices().key
 archinstall.log(f"Disk states before installing: {archinstall.disk_layouts()}", level=logging.DEBUG)
 
 
-
 def ask_user_questions():
 	
 	
     #nastaveni cz klavesnice
 	archinstall.arguments['keyboard-layout'] = 'cz-qwertz'   
-	#print(archinstall.arguments['keyboard-layout'])
-	#input()
-	# okna
+
 	
 	archinstall.arguments['mirror-region'] = archinstall.select_mirror_regions()
 
@@ -70,21 +52,21 @@ def ask_user_questions():
 	
 	archinstall.arguments['harddrives'] = archinstall.select_harddrives()
 
-	
-	archinstall.storage['disk_layouts'] = archinstall.select_disk_layout(archinstall.arguments['harddrives'], archinstall.arguments.get('advanced', False))
+	if archinstall.arguments.get('harddrives', None) is not None and archinstall.storage.get('disk_layouts', None) is None:
+		archinstall.storage['disk_layouts'] = archinstall.select_disk_layout(archinstall.arguments['harddrives'], archinstall.arguments.get('advanced', False))
 
 	# Get disk encryption password (or skip if blank)
-	
-	passwd = archinstall.get_password(prompt='Enter disk encryption password (leave blank for no encryption): ')
-	archinstall.arguments['!encryption-password'] = passwd
+	if archinstall.arguments['harddrives'] and archinstall.arguments.get('!encryption-password', None) is None:
+		if passwd := archinstall.get_password(prompt='Enter disk encryption password (leave blank for no encryption): '):
+			archinstall.arguments['!encryption-password'] = passwd
 
-
+	if archinstall.arguments['harddrives'] and archinstall.arguments.get('!encryption-password', None):
 		# If no partitions was marked as encrypted, but a password was supplied and we have some disks to format..
 		# Then we need to identify which partitions to encrypt. This will default to / (root).
-	if len(list(archinstall.encrypted_partitions(archinstall.storage['disk_layouts']))) == 0:
+		if len(list(archinstall.encrypted_partitions(archinstall.storage['disk_layouts']))) == 0:
 			archinstall.storage['disk_layouts'] = archinstall.select_encrypted_partitions(archinstall.storage['disk_layouts'], archinstall.arguments['!encryption-password'])
-
-	# Ask which boot-loader to use (will only ask if we're in BIOS (non-efi) mode)
+	
+ # Ask which boot-loader to use (will only ask if we're in BIOS (non-efi) mode)
 	
 	archinstall.arguments["bootloader"] = archinstall.ask_for_bootloader(archinstall.arguments.get('advanced', False))
 
