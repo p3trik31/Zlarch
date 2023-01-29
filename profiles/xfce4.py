@@ -13,9 +13,7 @@ __packages__ = [
 	"gvfs",
 	"network-manager-applet",
 	"xarchiver",
-    "git",
-   	"nano",
-    "vim"
+    "git"
     
    
     
