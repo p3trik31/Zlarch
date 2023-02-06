@@ -1,9 +1,0 @@
-{
-	"!root-password": "<root password>",
-	"!users": {
-		"username": {"!password": "<user password>"}
-	},
-	"!superusers": {
-		"admin": {"!password": "<admin password>"}
-	}
-}
