@@ -35,21 +35,14 @@ archinstall.log(f"Disk states before installing: {archinstall.disk_layouts()}", 
 
 def ask_user_questions():
 	
-	
-    #nastaveni cz klavesnice
 	archinstall.arguments['keyboard-layout'] = 'cz-qwertz'   
 
-	
 	archinstall.arguments['mirror-region'] = archinstall.select_mirror_regions()
 
-	#jazyk
 	archinstall.arguments['sys-language'] = 'cs_CZ'
 	
 	archinstall.arguments['sys-encoding'] = 'utf-8'
 
-	# Ask which harddrives/block-devices we will install to
-	# and convert them into archinstall.BlockDevice() objects.
-	
 	archinstall.arguments['harddrives'] = archinstall.select_harddrives()
 
 	if archinstall.arguments.get('harddrives', None) is not None and archinstall.storage.get('disk_layouts', None) is None:
@@ -66,7 +59,7 @@ def ask_user_questions():
 		if len(list(archinstall.encrypted_partitions(archinstall.storage['disk_layouts']))) == 0:
 			archinstall.storage['disk_layouts'] = archinstall.select_encrypted_partitions(archinstall.storage['disk_layouts'], archinstall.arguments['!encryption-password'])
 	
- # Ask which boot-loader to use (will only ask if we're in BIOS (non-efi) mode)
+ 	# Ask which boot-loader to use (will only ask if we're in BIOS (non-efi) mode)
 	
 	archinstall.arguments["bootloader"] = archinstall.ask_for_bootloader(archinstall.arguments.get('advanced', False))
 
@@ -261,14 +254,7 @@ def perform_installation(mountpoint):
 		if archinstall.arguments.get('services', None):
 			installation.enable_service(*archinstall.arguments['services'])
 		
-
-		print("Konfigurace Bootloaderu")
-  		#archinstall.run_custom_user_commands(['sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT=""/' /etc/default/grub'], installation, showLog = False)
     
-   		
-		
-		archinstall.run_custom_user_commands(['grub-mkconfig -o /boot/grub/grub.cfg'], installation, showLog = False)
-
 		print("Pridani repozitare do pacmana") #zatim neni funkcni
 		
 		#archinstall.run_custom_user_commands([f'echo "[zlarch-repo]\nSigLevel = Optional DatabaseOptional\nServer = 1.1.1.1" >> /etc/pacman.conf'], installation, showLog = False)
@@ -277,21 +263,21 @@ def perform_installation(mountpoint):
 		print("instalace balíčků")
 		archinstall.run_custom_user_commands(["pacman -S git neofetch man firefox openssl-1.1 papirus-icon-theme --noconfirm"], installation, showLog=False)
   
-		print("Konfigurace prostředí")
-		#archinstall.run_custom_user_commands(['mkdir /tmp'], installation, showLog = False)
-		#archinstall.run_custom_user_commands(['cd /tmp'], installation, showLog = False)
+		
+  
+  		print("Konfigurace prostředí")
 		archinstall.run_custom_user_commands(['echo "NAME=\"Zlarch\"" > /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "VESION=1.0" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "ID=Zlarch" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "PRETTY_NAME=\"Zlarch_OS\"" >> /etc/os-release'], installation, showLog = False)
   
-		archinstall.run_custom_user_commands(['touch pokus.sh'], installation, showLog=False)
-		archinstall.run_custom_user_commands(['echo "touch idk.txt" >> pokus.sh'], installation, showLog=False)
-		archinstall.run_custom_user_commands(['sh pokus.sh'], installation, showLog=False)
-		
-		
-		
-	
+  
+		archinstall.run_custom_user_commands(['git clone https://github.com/p3trik31/Zlarch.git'], installation, showLog=False)
+		archinstall.run_custom_user_commands(['sh Zlarch/design/env.sh'], installation, showLog=False)
+
+		archinstall.run_custom_user_commands(['rm -rf /Zlarch'], installation, showLog=False)
+		archinstall.run_custom_user_commands(['grub-mkconfig -o /boot/grub/grub.cfg'], installation, showLog = False)
+			
 		
 		if not archinstall.arguments.get('silent'):
 			choice = input("Would you like to chroot into the newly created installation and perform post-installation configuration? [Y/n] ")
@@ -303,6 +289,7 @@ def perform_installation(mountpoint):
 
 	# For support reasons, we'll log the disk layout post installation (crash or no crash)
 	archinstall.log(f"Disk states after installing: {archinstall.disk_layouts()}", level=logging.DEBUG)
+
 
 
 

@@ -1,10 +1,6 @@
 #!/bin/bash
 
 
-
-
-  #naklonovat git
-
 mkdir -p /usr/share/zlarch
 
 
@@ -39,6 +35,6 @@ lightdm() {
 
 
 grub_on
-
+lightdm
 
 exit 0
