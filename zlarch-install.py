@@ -263,9 +263,7 @@ def perform_installation(mountpoint):
 		print("instalace balíčků")
 		archinstall.run_custom_user_commands(["pacman -S git neofetch man firefox openssl-1.1 papirus-icon-theme --noconfirm"], installation, showLog=False)
   
-		
-  
-  		print("Konfigurace prostředí")
+		print("Konfigurace prostředí")
 		archinstall.run_custom_user_commands(['echo "NAME=\"Zlarch\"" > /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "VESION=1.0" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "ID=Zlarch" >> /etc/os-release'], installation, showLog = False)
