@@ -26,6 +26,18 @@ grub_on() {
 }
 
 
+lightdm() {
+
+
+
+
+
+
+  
+}
+
+
+
 grub_on
 
 
