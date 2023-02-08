@@ -1,6 +1,6 @@
-favorites=xfce4-web-browser.desktop,xfce4-mail-reader.desktop,xfce4-file-manager.desktop,xfce4-terminal-emulator.desktop
-recent=xfce4-screensaver-preferences.desktop,xfce-session-settings.desktop,xfce4-web-browser.desktop,xfce4-settings-editor.desktop,xfce-display-settings.desktop
-button-icon=/home/conf/Stažené soubory/index.png
+favorites=xfce4-web-browser.desktop,xfce4-file-manager.desktop,xfce4-terminal-emulator.desktop
+recent=firefox.desktop,xfce-keyboard-settings.desktop,org.xfce.mousepad.desktop,xfce4-dict.desktop,xfce4-web-browser.desktop,xfce4-file-manager.desktop,xfce4-screensaver-preferences.desktop,xfce-session-settings.desktop,xfce4-settings-editor.desktop,xfce-display-settings.desktop
+button-icon=/usr/share/zlarch/icon.png
 button-single-row=true
 show-button-title=false
 show-button-icon=true

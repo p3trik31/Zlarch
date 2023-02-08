@@ -3,6 +3,12 @@
 cp -r /Zlarch/design/zlarch/ /usr/share/
 cp -r /Zlarch/design/.config /etc/skel
 
+#yay
+git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+
+yay -Sy mugshot adapta-gtk-theme --noconfirm
+
+
 grub_on() {
   if command -v grub-install > /dev/null; then    
     echo 'GRUB_COLOR_NORMAL="white/black"' >> /etc/default/grub
@@ -20,21 +26,20 @@ grub_on() {
 
 
 lightdm() {
-  echo 'background=/usr/share/zlarch/wallpaper.svg' >> /etc/lightdm/lightdm-gtk-greeter.conf
-
-
-
-
-  
+  echo 'background=/usr/share/zlarch/wallpaper.svg' >> /etc/lightdm/lightdm-gtk-greeter.conf  
 }
+
+
+
 
 grub_on
 lightdm
 
+
 users=$(ls /home)
 
 for user in $users; do
-  cp -r /etc/skel/.config /home/$user
+  cp -rn /etc/skel/.config /home/$user
 done
 
 
