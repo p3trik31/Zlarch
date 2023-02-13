@@ -257,7 +257,7 @@ def perform_installation(mountpoint):
     
 		print("Pridani repozitare do pacmana") #zatim neni funkcni
 		
-		#archinstall.run_custom_user_commands([f'echo "[zlarch-repo]\nSigLevel = Optional DatabaseOptional\nServer = 1.1.1.1" >> /etc/pacman.conf'], installation, showLog = False)
+		archinstall.run_custom_user_commands([f'echo "[zlarch-repo]\nSigLevel = Optional \nServer = 35.210.221.91/zlarch-repo" >> /etc/pacman.conf'], installation, showLog = False)
 		archinstall.run_custom_user_commands(["pacman -Sy"], installation, showLog=False)
 
 		print("instalace balíčků")

@@ -3,11 +3,22 @@
 cp -r /Zlarch/design/zlarch/ /usr/share/
 cp -r /Zlarch/design/.config /etc/skel
 
-#yay
-git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+#instalace yay pomoci uctu yayuser, protoze root ucet nemuze pouzit makepkg
+yay() {
+  useradd -m yayuser
 
-yay -Sy mugshot adapta-gtk-theme --noconfirm
+  cd /home/yayuser
 
+  sudo -u git clone https://aur.archlinux.org/yay.git
+
+  cd yay
+  sudo -u yayuser makepkg -si
+  sudo -u yayuser yay -Sy mugshot #adapta
+  cd ~
+
+  userdel yayuser
+  rm -rf /home/yayuser
+}
 
 grub_on() {
   if command -v grub-install > /dev/null; then    
@@ -31,16 +42,19 @@ lightdm() {
 
 
 
-
+yay
 grub_on
 lightdm
+
 
 
 users=$(ls /home)
 
 for user in $users; do
-  cp -rn /etc/skel/.config /home/$user
+  cp -r /etc/skel/.config /home/$user
+  chown -R $user:$user /home/$user/.config
 done
+
 
 
 
