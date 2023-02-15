@@ -1,24 +1,14 @@
 #!/bin/bash
 
+echo '[zlarch-repo]' >> /etc/pacman.conf
+echo 'SigLevel = Optional' >> /etc/pacman.conf
+echo 'Server = 35.210.221.91/zlarch-repo' >> /etc/pacman.conf
+
+
 cp -r /Zlarch/design/zlarch/ /usr/share/
 cp -r /Zlarch/design/.config /etc/skel
 
-#instalace yay pomoci uctu yayuser, protoze root ucet nemuze pouzit makepkg
-yay() {
-  useradd -m yayuser
-
-  cd /home/yayuser
-
-  sudo -u git clone https://aur.archlinux.org/yay.git
-
-  cd yay
-  sudo -u yayuser makepkg -si
-  sudo -u yayuser yay -Sy mugshot #adapta
-  cd ~
-
-  userdel yayuser
-  rm -rf /home/yayuser
-}
+pacman -Sy 
 
 grub_on() {
   if command -v grub-install > /dev/null; then    
@@ -37,12 +27,12 @@ grub_on() {
 
 
 lightdm() {
-  echo 'background=/usr/share/zlarch/wallpaper.svg' >> /etc/lightdm/lightdm-gtk-greeter.conf  
+  echo 'background=/usr/share/zlarch/wallpaper.svg' >> /etc/lightdm/lightdm-gtk-greeter.conf
+  echo 'theme-name = Adapta' >> /etc/lightdm/lightdm-gtk-greeter.conf
+  echo 'indicators = ~host;~spacer;~clock;~spacer;~layout;~language;~session;~a11y;~power' >> /etc/lightdm/lightdm-gtk-greeter.conf
+
 }
 
-
-
-yay
 grub_on
 lightdm
 

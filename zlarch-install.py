@@ -255,13 +255,10 @@ def perform_installation(mountpoint):
 			installation.enable_service(*archinstall.arguments['services'])
 		
     
-		print("Pridani repozitare do pacmana") #zatim neni funkcni
-		
-		archinstall.run_custom_user_commands([f'echo "[zlarch-repo]\nSigLevel = Optional \nServer = 35.210.221.91/zlarch-repo" >> /etc/pacman.conf'], installation, showLog = False)
 		archinstall.run_custom_user_commands(["pacman -Sy"], installation, showLog=False)
 
 		print("instalace balíčků")
-		archinstall.run_custom_user_commands(["pacman -S git neofetch man firefox openssl-1.1 papirus-icon-theme go --noconfirm"], installation, showLog=False)
+		archinstall.run_custom_user_commands(["pacman -S git neofetch man firefox openssl-1.1 papirus-icon-theme adapta-gtk-theme --noconfirm"], installation, showLog=False)
   
 		print("Konfigurace prostředí")
 		archinstall.run_custom_user_commands(['echo "NAME=\"Zlarch\"" > /etc/os-release'], installation, showLog = False)
