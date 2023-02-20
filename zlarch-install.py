@@ -98,7 +98,7 @@ def ask_user_questions():
 	archinstall.arguments['audio'] = archinstall.ask_for_audio_selection(archinstall.is_desktop_profile(archinstall.arguments['profile']))
 
 	
-	archinstall.arguments['kernels'] = ['linux']  #archinstall.select_kernel()
+	archinstall.arguments['kernels'] = ['linux-lts']
 	
 
 	

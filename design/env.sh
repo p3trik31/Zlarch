@@ -2,7 +2,7 @@
 
 echo '[zlarch-repo]' >> /etc/pacman.conf
 echo 'SigLevel = Optional' >> /etc/pacman.conf
-echo 'Server = 35.210.221.91/zlarch-repo' >> /etc/pacman.conf
+echo 'Server = http://35.210.221.91/zlarch-repo' >> /etc/pacman.conf
 
 
 cp -r /Zlarch/design/zlarch/ /usr/share/
