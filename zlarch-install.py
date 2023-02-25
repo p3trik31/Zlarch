@@ -50,7 +50,7 @@ def ask_user_questions():
 
 	# Get disk encryption password (or skip if blank)
 	if archinstall.arguments['harddrives'] and archinstall.arguments.get('!encryption-password', None) is None:
-		if passwd := archinstall.get_password(prompt='Enter disk encryption password (leave blank for no encryption): '):
+		if passwd := archinstall.get_password(prompt='Zadejte heslo pro šifrování disku (zanechte prázdné pro přeskočení): '):
 			archinstall.arguments['!encryption-password'] = passwd
 
 	if archinstall.arguments['harddrives'] and archinstall.arguments.get('!encryption-password', None):
@@ -65,25 +65,19 @@ def ask_user_questions():
 
 	
 	archinstall.arguments['swap'] = archinstall.ask_for_swap()
-
-	# Get the hostname for the machine
 	
 	archinstall.arguments['hostname'] = input('hostname: ').strip(' ')
-
-	# Ask for a root password (optional, but triggers requirement for super-user if skipped)
-	
-	archinstall.arguments['!root-password'] = archinstall.get_password(prompt='Enter root password (leave blank to disable root & create superuser): ')
+		
 
 	# Ask for additional users (super-user if root pw was not set)
 	# if not archinstall.arguments.get('!root-password', None) and not archinstall.arguments.get('!superusers', None):
-	archinstall.arguments['!superusers'] = archinstall.ask_for_superuser_account('Create a required super-user with sudo privileges: ', forced=True)
-	users, superusers = archinstall.ask_for_additional_users('Enter a username to create an additional user (leave blank to skip & continue): ')
+	archinstall.arguments['!superusers'] = archinstall.ask_for_superuser_account('Vytvořte uživatele se sudo pravomocemi: ', forced=True)
+	users, superusers = archinstall.ask_for_additional_users('Vytvořte další uživatele (zanechte prázdné pro přeskočení a pokračování): ')
 	archinstall.arguments['!users'] = users
 	archinstall.arguments['!superusers'] = {**archinstall.arguments['!superusers'], **superusers}
 
-	# Ask for archinstall-specific profiles (such as desktop environments etc)
-	
-
+	archinstall.arguments['!root-password'] = archinstall.get_password(prompt='Zadejte heslo pro účet root (zanechte prázdné pro přeskočení a pokračování): ')
+ 
 	archinstall.arguments['profile'] = archinstall.select_profile()
 	if archinstall.arguments['profile'] and archinstall.arguments['profile'].has_prep_function():
 		namespace = f"{archinstall.arguments['profile'].namespace}.py"
@@ -96,12 +90,9 @@ def ask_user_questions():
 	
 		# The argument to ask_for_audio_selection lets the library know if it's a desktop profile
 	archinstall.arguments['audio'] = archinstall.ask_for_audio_selection(archinstall.is_desktop_profile(archinstall.arguments['profile']))
-
 	
 	archinstall.arguments['kernels'] = ['linux-lts']
-	
-
-	
+		
 	archinstall.arguments['timezone'] = archinstall.ask_for_a_timezone()
 
 	if archinstall.arguments['timezone']:		
@@ -131,11 +122,6 @@ def perform_filesystem_operations():
 	
 	input('Press Enter to continue.')
 
-	"""
-		Issue a final warning before we continue with something un-revertable.
-		We mention the drive one last time, and count from 5 to 0.
-	"""
-
 	if archinstall.arguments.get('harddrives', None):
 		print(f" ! Formatting {archinstall.arguments['harddrives']} in ", end='')
 		archinstall.do_countdown()
@@ -162,11 +148,7 @@ def perform_installation(mountpoint):
 	with open("/var/log/archinstall/user_credentials.json", "w") as config_file:
 		config_file.write(json.dumps(user_credentials, indent=4, sort_keys=True, cls=archinstall.UNSAFE_JSON))
 
-	"""
-	Performs the installation steps on a block device.
-	Only requirement is that the block devices are
-	formatted and setup prior to entering this function.
-	"""
+
 	with archinstall.Installer(mountpoint, kernels=archinstall.arguments.get('kernels', 'linux')) as installation:
 		# Mount all the drives to the desired mountpoint
 		# This *can* be done outside of the installation, but the installer can deal with it.
@@ -265,8 +247,7 @@ def perform_installation(mountpoint):
 		archinstall.run_custom_user_commands(['echo "VESION=1.0" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "ID=Zlarch" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "PRETTY_NAME=\"Zlarch_OS\"" >> /etc/os-release'], installation, showLog = False)
-  
-  
+    
 		archinstall.run_custom_user_commands(['git clone https://github.com/p3trik31/Zlarch.git'], installation, showLog=False)
 		archinstall.run_custom_user_commands(['sh Zlarch/design/env.sh'], installation, showLog=False)
 
@@ -282,10 +263,8 @@ def perform_installation(mountpoint):
 				except:
 					pass
 
-	# For support reasons, we'll log the disk layout post installation (crash or no crash)
+
 	archinstall.log(f"Disk states after installing: {archinstall.disk_layouts()}", level=logging.DEBUG)
-
-
 
 
 ask_user_questions()

@@ -255,7 +255,7 @@ class MiniCurses:
 			return response
 
 
-def ask_for_swap(prompt='Would you like to use swap on zram? (Y/n): ', forced=False):
+def ask_for_swap(prompt='Checete použít paměť swap? (Y/n): ', forced=False):
 	return True if input(prompt).strip(' ').lower() not in ('n', 'no') else False
 
 
@@ -315,7 +315,7 @@ def ask_for_bootloader(advanced_options=False) -> str:
 	bootloader = "systemd-bootctl" if has_uefi() else "grub-install"
 	if has_uefi():
 		if not advanced_options:
-			bootloader_choice = input("Would you like to use GRUB as a bootloader instead of systemd-boot? [y/N] ").lower()
+			bootloader_choice = input("Chcete použít GRUB jako výchozí bootloader místo systemd-boot? [y/N] ").lower()
 			if bootloader_choice == "y":
 				bootloader = "grub-install"
 		else:
