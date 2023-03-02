@@ -62,19 +62,7 @@ def _prep_function(*args, **kwargs):
 
 
 if __name__ == 'desktop':
-	"""
-	This "profile" is a meta-profile.
-	There are no desktop-specific steps, it simply routes
-	the installer to whichever desktop environment/window manager was chosen.
-
-	Maybe in the future, a network manager or similar things *could* be added here.
-	We should honor that Arch Linux does not officially endorse a desktop-setup, nor is
-	it trying to be a turn-key desktop distribution.
-
-	There are plenty of desktop-turn-key-solutions based on Arch Linux,
-	this is therefore just a helper to get started
-	"""
-
+	
 	# Install common packages for all desktop environments
 	archinstall.storage['installation_session'].add_additional_packages(__packages__)
 

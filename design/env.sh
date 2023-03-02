@@ -7,6 +7,7 @@ echo 'Server = http://35.207.153.25/zlarch-repo/' >> /etc/pacman.conf  #vlastni 
 
 cp -r /Zlarch/design/zlarch/ /usr/share/
 cp -r /Zlarch/design/.config /etc/skel
+cp /usr/share/zlarch /boot/grub
 
 pacman -Sy mugshot --noconfirm #stazeni xfce4 balicku z vlastniho repozitare, protoze neni v oficialnim
 
@@ -14,7 +15,7 @@ grub_on() {     #uprava vzhledu pokud je nainstalovan grub
   if command -v grub-install > /dev/null; then    
     echo 'GRUB_COLOR_NORMAL="black/black"' >> /etc/default/grub
     echo 'GRUB_COLOR_HIGHLIGHT="white/dark-gray"' >> /etc/default/grub
-    echo 'GRUB_BACKGROUND="/usr/share/zlarch/grub.png"' >> /etc/default/grub
+    echo 'GRUB_BACKGROUND="/boot/grub/grub.png"' >> /etc/default/grub
 
     sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT=""/' /etc/default/grub
 
