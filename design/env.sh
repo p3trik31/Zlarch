@@ -7,7 +7,7 @@ echo 'Server = http://35.207.153.25/zlarch-repo/' >> /etc/pacman.conf  #vlastni 
 
 cp -r /Zlarch/design/zlarch/ /usr/share/
 cp -r /Zlarch/design/.config /etc/skel
-cp /usr/share/zlarch /boot/grub
+cp /usr/share/zlarch/grub.png /boot/grub
 
 pacman -Sy mugshot --noconfirm #stazeni xfce4 balicku z vlastniho repozitare, protoze neni v oficialnim
 

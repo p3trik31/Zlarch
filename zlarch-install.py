@@ -4,8 +4,13 @@ import os
 import pathlib
 import time
 import getpass
+import argparse
 import archinstall
-	
+
+new_parser = argparse.ArgumentParser()
+args = new_parser.parse_args()
+
+ 
 if os.getuid() != 0:
 	print("Program potřebuje root pravomoce pro spuštění")
 	exit(1)
@@ -23,14 +28,14 @@ _______  _        _______  _______  _______
                 """)
 
 
+#potředbné balíčky: [arch-install-scripts, base-devel, libfido2]
 os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
 
-archinstall.log(f"Hardware model detected: {archinstall.sys_vendor()} {archinstall.product_name()}; UEFI mode: {archinstall.has_uefi()}", level=logging.DEBUG)
-archinstall.log(f"Processor model detected: {archinstall.cpu_model()}", level=logging.DEBUG)
-archinstall.log(f"Memory statistics: {archinstall.mem_available()} available out of {archinstall.mem_total()} total installed", level=logging.DEBUG)
-archinstall.log(f"Virtualization detected: {archinstall.virtualization()}; is VM: {archinstall.is_vm()}", level=logging.DEBUG)
-archinstall.log(f"Graphics devices detected: {archinstall.graphics_devices().keys()}", level=logging.DEBUG)
-archinstall.log(f"Disk states before installing: {archinstall.disk_layouts()}", level=logging.DEBUG)
+
+#def fix():
+#	os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
+
+
 
 
 def ask_user_questions():
@@ -97,14 +102,13 @@ def ask_user_questions():
 
 	if archinstall.arguments['timezone']:		
 		archinstall.arguments['ntp'] = input("Would you like to use automatic time synchronization (NTP) with the default time servers? [Y/n]: ").strip().lower() in ('y', 'yes', '')
-		if archinstall.arguments['ntp']:
+		if archinstall.arguments['ntp']:  #delete
 			archinstall.log("Hardware time and other post-configuration steps might be required in order for NTP to work. For more information, please check the Arch wiki.", fg="yellow")
 
 
 def perform_filesystem_operations():
 	print()
 	print('This is your chosen configuration:')
-	archinstall.log("-- Guided template chosen (with below config) --", level=logging.DEBUG)
 	user_configuration = json.dumps({**archinstall.arguments, 'version' : archinstall.__version__} , indent=4, sort_keys=True, cls=archinstall.JSON)
 	archinstall.log(user_configuration, level=logging.INFO)
 	with open("/var/log/archinstall/user_configuration.json", "w") as config_file:
@@ -263,8 +267,6 @@ def perform_installation(mountpoint):
 				except:
 					pass
 
-
-	archinstall.log(f"Disk states after installing: {archinstall.disk_layouts()}", level=logging.DEBUG)
 
 
 ask_user_questions()
