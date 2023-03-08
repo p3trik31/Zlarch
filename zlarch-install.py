@@ -96,14 +96,12 @@ def ask_user_questions():
 		# The argument to ask_for_audio_selection lets the library know if it's a desktop profile
 	archinstall.arguments['audio'] = archinstall.ask_for_audio_selection(archinstall.is_desktop_profile(archinstall.arguments['profile']))
 	
-	archinstall.arguments['kernels'] = ['linux-lts']
+	archinstall.arguments['kernels'] = ['linux-lts']     #longterm kernel
 		
 	archinstall.arguments['timezone'] = archinstall.ask_for_a_timezone()
 
 	if archinstall.arguments['timezone']:		
 		archinstall.arguments['ntp'] = input("Would you like to use automatic time synchronization (NTP) with the default time servers? [Y/n]: ").strip().lower() in ('y', 'yes', '')
-		if archinstall.arguments['ntp']:  #delete
-			archinstall.log("Hardware time and other post-configuration steps might be required in order for NTP to work. For more information, please check the Arch wiki.", fg="yellow")
 
 
 def perform_filesystem_operations():
@@ -120,7 +118,7 @@ def perform_filesystem_operations():
 			disk_layout_file.write(user_disk_layout)
 	print()
 
-	if archinstall.arguments.get('dry-run'):
+	if archinstall.arguments.get('dry-run'):             #upravit
 		exit(0)
 
 	
@@ -234,11 +232,6 @@ def perform_installation(mountpoint):
 					if not imported._post_install():
 						archinstall.log(' * Profile\'s post configuration requirements was not fulfilled.', fg='red')
 						exit(1)
-
-		# If the user provided a list of services to be enabled, pass the list to the enable_service function.
-		# Note that while it's called enable_service, it can actually take a list of services and iterate it.
-		if archinstall.arguments.get('services', None):
-			installation.enable_service(*archinstall.arguments['services'])
 		
     
 		archinstall.run_custom_user_commands(["pacman -Sy"], installation, showLog=False)
