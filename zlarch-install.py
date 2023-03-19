@@ -1,3 +1,4 @@
+#Spuštění skriptu vyžaduje balíčky jako: arch-install-scripts, base-devel, libfido2. Skript je možné stáhnout a pustit přes oficialni iso arch linuxu
 import json
 import logging
 import os
@@ -8,11 +9,13 @@ import argparse
 import archinstall
 
 new_parser = argparse.ArgumentParser()
+new_parser.add_argument('--fix-keys', action='store_true', help='Oprava nefunkčních klíčů v arch linuxu')
+new_parser.add_argument('--dry-run', action='store_true', help='Zapnutí nanečisto, neproběhne instalace')
 args = new_parser.parse_args()
 
- 
+
 if os.getuid() != 0:
-	print("Program potřebuje root pravomoce pro spuštění")
+	print("Instalační skript potřebuje root pravomoce pro spuštění")
 	exit(1)
  
 print(r"""\
@@ -28,13 +31,21 @@ _______  _        _______  _______  _______
                 """)
 
 
-#potředbné balíčky: [arch-install-scripts, base-devel, libfido2]
+
+def fix_keys():	#v pripade nefunkcnosti archlinux-keyring pri pouziti arch iso, v pripade ze ani tak pacman nefunguje, je potřeba restart počítače nebo aktualizace arch iso 
+	os.system('sudo killall gpg-agent')
+	os.system('sudo rm -rf /etc/pacman.d/gnupg')
+	os.system('sudo pacman-key --init')
+	os.system('sudo pacman-key --populate')
+	os.system('sudo pacman-key --refresh-keys')
+
+
+
+if args.fix_keys:
+    fix_keys()
+ 
+ 
 os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
-
-
-#def fix():
-#	os.system('sudo pacman -Sy archlinux-keyring --noconfirm')
-
 
 
 
@@ -118,7 +129,7 @@ def perform_filesystem_operations():
 			disk_layout_file.write(user_disk_layout)
 	print()
 
-	if archinstall.arguments.get('dry-run'):             #upravit
+	if args.dry_run:
 		exit(0)
 
 	
@@ -245,10 +256,10 @@ def perform_installation(mountpoint):
 		archinstall.run_custom_user_commands(['echo "ID=Zlarch" >> /etc/os-release'], installation, showLog = False)
 		archinstall.run_custom_user_commands(['echo "PRETTY_NAME=\"Zlarch_OS\"" >> /etc/os-release'], installation, showLog = False)
     
-		archinstall.run_custom_user_commands(['git clone https://github.com/p3trik31/Zlarch.git'], installation, showLog=False)
-		archinstall.run_custom_user_commands(['sh Zlarch/design/env.sh'], installation, showLog=False)
+		archinstall.run_custom_user_commands(['git clone https://github.com/p3trik31/zlarch.git'], installation, showLog=False)
+		archinstall.run_custom_user_commands(['sh zlarch/design/customize.sh'], installation, showLog=False)
 
-		archinstall.run_custom_user_commands(['rm -rf /Zlarch'], installation, showLog=False)
+		archinstall.run_custom_user_commands(['rm -rf /zlarch'], installation, showLog=False)
 		archinstall.run_custom_user_commands(['grub-mkconfig -o /boot/grub/grub.cfg'], installation, showLog = False)
 			
 		

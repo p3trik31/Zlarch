@@ -9,7 +9,7 @@ cp -r /Zlarch/design/zlarch/ /usr/share/
 cp -r /Zlarch/design/.config /etc/skel
 cp /usr/share/zlarch/grub.png /boot/grub
 
-pacman -Sy mugshot --noconfirm #stazeni xfce4 balicku z vlastniho repozitare, protoze neni v oficialnim
+pacman -Sy mugshot --noconfirm  #stazeni xfce4 balicku z vlastniho repozitare, protoze neni v oficialnim
 
 grub_on() {     #uprava vzhledu pokud je nainstalovan grub
   if command -v grub-install > /dev/null; then    
