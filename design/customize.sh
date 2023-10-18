@@ -2,7 +2,7 @@
 
 echo '[zlarch-repo]' >> /etc/pacman.conf
 echo 'SigLevel = Optional' >> /etc/pacman.conf
-echo 'Server = http://35.207.153.25/zlarch-repo/' >> /etc/pacman.conf  #vlastni repozitar
+echo 'Server = http://chmelap.me/repo' >> /etc/pacman.conf  #vlastni repozitar
 
 
 cp -r /zlarch/design/zlarch/ /usr/share/
